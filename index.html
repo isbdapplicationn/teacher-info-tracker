@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>শিক্ষক তথ্য ট্র্যাকার</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --sky-1:#e0f2fe;--sky-2:#bae6fd;--sky-3:#7dd3fc;--sky-4:#38bdf8;
+    --sky-5:#0ea5e9;--sky-6:#0284c7;--sky-7:#0369a1;--ink:#0c4a6e;
+    --card:rgba(255,255,255,0.75);--shadow:0 10px 30px -10px rgba(2,132,199,0.35);--radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Hind Siliguri',sans-serif;}
+  body{min-height:100vh;background:linear-gradient(135deg,#e0f2fe 0%,#bae6fd 35%,#7dd3fc 70%,#38bdf8 100%);background-attachment:fixed;color:var(--ink);padding:16px;-webkit-tap-highlight-color:transparent;}
+  .wrap{max-width:1100px;margin:0 auto;}
+  header{text-align:center;padding:26px 18px;background:linear-gradient(135deg,var(--sky-5),var(--sky-7));border-radius:var(--radius);color:#fff;box-shadow:var(--shadow);margin-bottom:18px;position:relative;overflow:hidden;}
+  header::after{content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.12);}
+  header .icon-badge{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;backdrop-filter:blur(4px);}
+  header h1{font-size:1.5rem;font-weight:700;letter-spacing:.3px;}
+  header p{opacity:.9;margin-top:6px;font-size:.9rem;}
+  .count-chip{display:inline-flex;gap:8px;align-items:center;margin-top:12px;background:rgba(255,255,255,0.2);padding:7px 16px;border-radius:30px;font-size:.85rem;font-weight:600;}
+  .tabs{display:flex;gap:8px;background:var(--card);padding:8px;border-radius:16px;margin-bottom:18px;box-shadow:var(--shadow);backdrop-filter:blur(10px);overflow-x:auto;}
+  .tab-btn{flex:1;min-width:92px;border:none;cursor:pointer;padding:12px 8px;border-radius:12px;background:transparent;color:var(--sky-7);font-weight:600;font-size:.85rem;display:flex;flex-direction:column;align-items:center;gap:5px;transition:.25s;white-space:nowrap;}
+  .tab-btn i{font-size:1.1rem;}
+  .tab-btn.active{background:linear-gradient(135deg,var(--sky-4),var(--sky-6));color:#fff;box-shadow:0 6px 16px -6px rgba(2,132,199,.6);}
+  .panel{display:none;animation:fade .35s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .section-title{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:700;color:var(--ink);margin:6px 4px 14px;}
+  .section-title i{color:var(--sky-6);}
+  .grid{display:grid;gap:14px;margin-bottom:24px;}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .stat-card{background:var(--card);border-radius:var(--radius);padding:20px 16px;box-shadow:var(--shadow);backdrop-filter:blur(10px);text-align:center;border:1px solid rgba(255,255,255,0.6);position:relative;overflow:hidden;transition:.3s;}
+  .stat-card:hover{transform:translateY(-4px);}
+  .stat-card .ic{width:48px;height:48px;border-radius:14px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;background:linear-gradient(135deg,var(--sky-4),var(--sky-6));}
+  .stat-card .num{font-size:2rem;font-weight:700;color:var(--sky-7);line-height:1;}
+  .stat-card .lbl{margin-top:8px;font-size:.85rem;font-weight:600;color:#075985;}
+  .stat-card .pct{margin-top:4px;font-size:.72rem;color:#0891b2;}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--card);padding:14px;border-radius:16px;box-shadow:var(--shadow);margin-bottom:14px;backdrop-filter:blur(10px);}
+  .toolbar input{flex:1;min-width:140px;padding:10px 14px;border-radius:10px;border:1px solid var(--sky-3);font-size:.9rem;background:#fff;outline:none;}
+  .toolbar input:focus{border-color:var(--sky-5);box-shadow:0 0 0 3px rgba(56,189,248,.25);}
+  .btn{border:none;cursor:pointer;padding:10px 16px;border-radius:10px;font-weight:600;font-size:.85rem;color:#fff;background:linear-gradient(135deg,var(--sky-5),var(--sky-7));display:inline-flex;align-items:center;gap:7px;transition:.25s;}
+  .btn:hover{opacity:.9;}
+  .btn.ghost{background:#fff;color:var(--sky-7);border:1px solid var(--sky-3);}
+  .list{display:grid;gap:10px;}
+  .row-card{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 6px 18px -12px rgba(2,132,199,.4);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.6);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .code-badge{background:linear-gradient(135deg,var(--sky-4),var(--sky-6));color:#fff;font-weight:700;min-width:56px;text-align:center;padding:8px 6px;border-radius:10px;font-size:.9rem;}
+  .opts{display:flex;gap:8px;flex-wrap:wrap;flex:1;}
+  .chk{display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;border:1.5px solid var(--sky-2);padding:7px 12px;border-radius:9px;font-size:.82rem;font-weight:600;color:#075985;user-select:none;transition:.2s;}
+  .chk input{accent-color:var(--sky-6);width:16px;height:16px;cursor:pointer;}
+  .chk.on{background:var(--sky-1);border-color:var(--sky-5);}
+  .radio-group{display:flex;gap:8px;flex-wrap:wrap;flex:1;}
+  .radio-group label{display:flex;align-items:center;gap:6px;cursor:pointer;background:#fff;border:1.5px solid var(--sky-2);padding:7px 14px;border-radius:9px;font-size:.82rem;font-weight:600;color:#075985;transition:.2s;}
+  .radio-group label.on{background:var(--sky-1);border-color:var(--sky-5);}
+  .radio-group input{accent-color:var(--sky-6);}
+  .mini-progress{height:8px;background:var(--sky-1);border-radius:6px;overflow:hidden;margin:10px 4px 20px;}
+  .mini-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--sky-4),var(--sky-6));transition:.4s;}
+  .prog-label{font-size:.8rem;color:#0891b2;margin:0 4px 6px;font-weight:600;}
+  footer{text-align:center;color:var(--sky-7);font-size:.8rem;padding:20px 0;opacity:.8;}
+  @media(max-width:720px){header h1{font-size:1.2rem;}.g3{grid-template-columns:repeat(2,1fr);}.stat-card .num{font-size:1.6rem;}.tab-btn span{font-size:.72rem;}}
+  @media(max-width:420px){.g3,.g2{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="icon-badge"><i class="fas fa-mosque"></i></div>
+    <h1>শিক্ষক তথ্য ব্যবস্থাপনা</h1>
+    <p>যোগ্যতা • পদবী • স্থান • লিঙ্গ ট্র্যাকিং</p>
+    <div class="count-chip"><i class="fas fa-users"></i> মোট শিক্ষক: <span id="totalChip">161</span> জন</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="summary"><i class="fas fa-chart-pie"></i><span>সামারি</span></button>
+    <button class="tab-btn" data-tab="edu"><i class="fas fa-graduation-cap"></i><span>যোগ্যতা</span></button>
+    <button class="tab-btn" data-tab="role"><i class="fas fa-user-tie"></i><span>পদবী</span></button>
+    <button class="tab-btn" data-tab="place"><i class="fas fa-location-dot"></i><span>স্থান</span></button>
+    <button class="tab-btn" data-tab="gender"><i class="fas fa-venus-mars"></i><span>লিঙ্গ</span></button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="panel active" id="summary">
+    <div class="section-title"><i class="fas fa-graduation-cap"></i> শিক্ষাগত যোগ্যতা</div>
+    <div class="grid g3">
+      <div class="stat-card"><div class="ic"><i class="fas fa-book-quran"></i></div><div class="num" id="s_madrasa">0</div><div class="lbl">মাদরাসা শিক্ষা</div><div class="pct" id="p_madrasa">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-book-open"></i></div><div class="num" id="s_general">0</div><div class="lbl">সাধারণ শিক্ষা</div><div class="pct" id="p_general">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-layer-group"></i></div><div class="num" id="s_both">0</div><div class="lbl">উভয় শিক্ষা</div><div class="pct" id="p_both">0%</div></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-user-tie"></i> পদবী</div>
+    <div class="grid g3">
+      <div class="stat-card"><div class="ic"><i class="fas fa-person-praying"></i></div><div class="num" id="s_imam">0</div><div class="lbl">ইমাম</div><div class="pct" id="p_imam">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-bullhorn"></i></div><div class="num" id="s_muezzin">0</div><div class="lbl">মুয়াজ্জিন</div><div class="pct" id="p_muezzin">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-broom"></i></div><div class="num" id="s_khadem">0</div><div class="lbl">খাদেম</div><div class="pct" id="p_khadem">0%</div></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-location-dot"></i> কেন্দ্রের স্থান</div>
+    <div class="grid g2">
+      <div class="stat-card"><div class="ic"><i class="fas fa-mosque"></i></div><div class="num" id="s_inside">0</div><div class="lbl">মসজিদের ভিতরে</div><div class="pct" id="p_inside">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-door-open"></i></div><div class="num" id="s_outside">0</div><div class="lbl">মসজিদের বাহিরে</div><div class="pct" id="p_outside">0%</div></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-venus-mars"></i> লিঙ্গ</div>
+    <div class="grid g2">
+      <div class="stat-card"><div class="ic"><i class="fas fa-mars"></i></div><div class="num" id="s_male">0</div><div class="lbl">পুরুষ</div><div class="pct" id="p_male">0%</div></div>
+      <div class="stat-card"><div class="ic"><i class="fas fa-venus"></i></div><div class="num" id="s_female">0</div><div class="lbl">মহিলা</div><div class="pct" id="p_female">0%</div></div>
+    </div>
+
+    <div class="grid g2" style="margin-top:6px">
+      <button class="btn ghost" onclick="exportData()"><i class="fas fa-download"></i> ব্যাকআপ ডাউনলোড</button>
+      <button class="btn ghost" onclick="document.getElementById('importFile').click()"><i class="fas fa-upload"></i> ব্যাকআপ রিস্টোর</button>
+      <input type="file" id="importFile" accept=".json" hidden onchange="importData(event)">
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="panel" id="edu">
+    <div class="prog-label" id="eduProgLabel">পূরণ হয়েছে: 0 / 161</div>
+    <div class="mini-progress"><span id="eduProg" style="width:0%"></span></div>
+    <div class="toolbar"><input type="text" id="eduSearch" placeholder="কোড নম্বর দিয়ে খুঁজুন..." oninput="render('edu')"></div>
+    <div class="list" id="eduList"></div>
+  </div>
+
+  <!-- ROLE -->
+  <div class="panel" id="role">
+    <div class="prog-label" id="roleProgLabel">পূরণ হয়েছে: 0 / 161</div>
+    <div class="mini-progress"><span id="roleProg" style="width:0%"></span></div>
+    <div class="toolbar"><input type="text" id="roleSearch" placeholder="কোড নম্বর দিয়ে খুঁজুন..." oninput="render('role')"></div>
+    <div class="list" id="roleList"></div>
+  </div>
+
+  <!-- PLACE -->
+  <div class="panel" id="place">
+    <div class="prog-label" id="placeProgLabel">পূরণ হয়েছে: 0 / 161</div>
+    <div class="mini-progress"><span id="placeProg" style="width:0%"></span></div>
+    <div class="toolbar"><input type="text" id="placeSearch" placeholder="কোড নম্বর দিয়ে খুঁজুন..." oninput="render('place')"></div>
+    <div class="list" id="placeList"></div>
+  </div>
+
+  <!-- GENDER -->
+  <div class="panel" id="gender">
+    <div class="prog-label" id="genderProgLabel">পূরণ হয়েছে: 0 / 161</div>
+    <div class="mini-progress"><span id="genderProg" style="width:0%"></span></div>
+    <div class="toolbar"><input type="text" id="genderSearch" placeholder="কোড নম্বর দিয়ে খুঁজুন..." oninput="render('gender')"></div>
+    <div class="list" id="genderList"></div>
+  </div>
+
+  <footer><i class="fas fa-shield-halved"></i> সকল তথ্য আপনার ডিভাইসেই সংরক্ষিত থাকে</footer>
+</div>
+
+<script>
+function buildCodes(){
+  const codes=[];
+  for(let i=138;i<=200;i++) codes.push(i);
+  codes.push(211,212);
+  for(let i=387;i<=482;i++) codes.push(i);
+  return codes;
+}
+const CODES=buildCodes();
+const STORAGE_KEY='shikkhokTrackerData_v2';
+
+let data=loadData();
+function loadData(){
+  const saved=localStorage.getItem(STORAGE_KEY);
+  // পুরনো v1 ব্যাকআপ থাকলে সেটাও লোড করার চেষ্টা
+  let obj=saved?JSON.parse(saved):(localStorage.getItem('shikkhokTrackerData_v1')?JSON.parse(localStorage.getItem('shikkhokTrackerData_v1')):{});
+  CODES.forEach(c=>{
+    if(!obj[c]) obj[c]={madrasa:false,general:false,role:'',place:'',gender:''};
+    if(obj[c].gender===undefined) obj[c].gender='';
+  });
+  return obj;
+}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function bn(n){return String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    const t=btn.dataset.tab;
+    document.getElementById(t).classList.add('active');
+    if(t==='summary') renderSummary();
+  };
+});
+
+function render(type){
+  const search=document.getElementById(type+'Search').value.trim();
+  const list=document.getElementById(type+'List');
+  list.innerHTML='';
+  const filtered=CODES.filter(c=>String(c).includes(search));
+
+  filtered.forEach(c=>{
+    const d=data[c];
+    const card=document.createElement('div');
+    card.className='row-card';
+    let html=`<div class="code-badge">${bn(c)}</div>`;
+
+    if(type==='edu'){
+      html+=`<div class="opts">
+        <label class="chk ${d.madrasa?'on':''}"><input type="checkbox" ${d.madrasa?'checked':''} onchange="setEdu(${c},'madrasa',this.checked)"> মাদরাসা</label>
+        <label class="chk ${d.general?'on':''}"><input type="checkbox" ${d.general?'checked':''} onchange="setEdu(${c},'general',this.checked)"> সাধারণ</label>
+      </div>`;
+    }
+    else if(type==='role'){
+      html+=`<div class="radio-group">
+        <label class="${d.role==='imam'?'on':''}"><input type="radio" name="r${c}" ${d.role==='imam'?'checked':''} onchange="setField(${c},'role','imam','role')"> ইমাম</label>
+        <label class="${d.role==='muezzin'?'on':''}"><input type="radio" name="r${c}" ${d.role==='muezzin'?'checked':''} onchange="setField(${c},'role','muezzin','role')"> মুয়াজ্জিন</label>
+        <label class="${d.role==='khadem'?'on':''}"><input type="radio" name="r${c}" ${d.role==='khadem'?'checked':''} onchange="setField(${c},'role','khadem','role')"> খাদেম</label>
+      </div>`;
+    }
+    else if(type==='place'){
+      html+=`<div class="radio-group">
+        <label class="${d.place==='inside'?'on':''}"><input type="radio" name="p${c}" ${d.place==='inside'?'checked':''} onchange="setField(${c},'place','inside','place')"> ভিতরে</label>
+        <label class="${d.place==='outside'?'on':''}"><input type="radio" name="p${c}" ${d.place==='outside'?'checked':''} onchange="setField(${c},'place','outside','place')"> বাহিরে</label>
+      </div>`;
+    }
+    else if(type==='gender'){
+      html+=`<div class="radio-group">
+        <label class="${d.gender==='male'?'on':''}"><input type="radio" name="g${c}" ${d.gender==='male'?'checked':''} onchange="setField(${c},'gender','male','gender')"> পুরুষ</label>
+        <label class="${d.gender==='female'?'on':''}"><input type="radio" name="g${c}" ${d.gender==='female'?'checked':''} onchange="setField(${c},'gender','female','gender')"> মহিলা</label>
+      </div>`;
+    }
+    card.innerHTML=html;
+    list.appendChild(card);
+  });
+  updateProgress(type);
+}
+
+function setEdu(code,field,val){
+  data[code][field]=val;
+  save();render('edu');
+}
+function setField(code,field,val,type){
+  data[code][field]=val;
+  save();render(type);
+}
+
+function updateProgress(type){
+  let done=0;
+  CODES.forEach(c=>{
+    const d=data[c];
+    if(type==='edu' && (d.madrasa||d.general)) done++;
+    if(type==='role' && d.role) done++;
+    if(type==='place' && d.place) done++;
+    if(type==='gender' && d.gender) done++;
+  });
+  const pct=Math.round(done/CODES.length*100);
+  document.getElementById(type+'Prog').style.width=pct+'%';
+  document.getElementById(type+'ProgLabel').textContent=`পূরণ হয়েছে: ${bn(done)} / ${bn(CODES.length)}`;
+}
+
+function renderSummary(){
+  let madrasa=0,general=0,both=0,imam=0,muezzin=0,khadem=0,inside=0,outside=0,male=0,female=0;
+  const T=CODES.length;
+  CODES.forEach(c=>{
+    const d=data[c];
+    if(d.madrasa&&d.general) both++;
+    else if(d.madrasa) madrasa++;
+    else if(d.general) general++;
+    if(d.role==='imam') imam++;
+    if(d.role==='muezzin') muezzin++;
+    if(d.role==='khadem') khadem++;
+    if(d.place==='inside') inside++;
+    if(d.place==='outside') outside++;
+    if(d.gender==='male') male++;
+    if(d.gender==='female') female++;
+  });
+  const set=(id,v)=>document.getElementById(id).textContent=bn(v);
+  const pct=(id,v)=>document.getElementById(id).textContent=bn(Math.round(v/T*100))+'%';
+  set('s_madrasa',madrasa);set('s_general',general);set('s_both',both);
+  pct('p_madrasa',madrasa);pct('p_general',general);pct('p_both',both);
+  set('s_imam',imam);set('s_muezzin',muezzin);set('s_khadem',khadem);
+  pct('p_imam',imam);pct('p_muezzin',muezzin);pct('p_khadem',khadem);
+  set('s_inside',inside);set('s_outside',outside);
+  pct('p_inside',inside);pct('p_outside',outside);
+  set('s_male',male);set('s_female',female);
+  pct('p_male',male);pct('p_female',female);
+  document.getElementById('totalChip').textContent=bn(T);
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='shikkhok-backup.json';
+  a.click();
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const imported=JSON.parse(ev.target.result);
+      CODES.forEach(c=>{if(imported[c]){data[c]={...data[c],...imported[c]};}});
+      save();renderSummary();
+      alert('ব্যাকআপ সফলভাবে রিস্টোর হয়েছে!');
+    }catch(err){alert('ফাইলটি সঠিক নয়।');}
+  };
+  reader.readAsText(file);
+}
+
+render('edu');render('role');render('place');render('gender');renderSummary();
+</script>
+</body>
+</html>
